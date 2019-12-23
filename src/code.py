@@ -1,49 +1,9 @@
 # Circuit Python
 
-import displayio
-from adafruit_gizmo import tft_gizmo
+from hardware_gizmo import HardwareGizmo
 from line_art import LineArt
 
-# Get a drawing canvas on the gizmo
-display = tft_gizmo.TFT_Gizmo()
-splash = displayio.Group(max_size=10)
-display.show(splash)
-color_bitmap = displayio.Bitmap(240, 240, 32)
-color_palette = displayio.Palette(32)
-bg_sprite = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
-splash.append(bg_sprite)
-
-# Line function for the gizmo
-def line(x0, y0, x1, y1,color):    
-    # Line drawing function.  Will draw a single pixel wide line starting at
-    # x0, y0 and ending at x1, y1.
-    steep = abs(y1 - y0) > abs(x1 - x0)
-    if steep:
-        x0, y0 = y0, x0
-        x1, y1 = y1, x1
-    if x0 > x1:
-        x0, x1 = x1, x0
-        y0, y1 = y1, y0
-    dx = x1 - x0
-    dy = abs(y1 - y0)
-    err = dx // 2
-    ystep = 0
-    if y0 < y1:
-        ystep = 1
-    else:
-        ystep = -1
-    while x0 <= x1:
-        if steep:
-            color_bitmap[y0,x0] = color
-            #self._pixel(y0, x0, *args, **kwargs)
-        else:
-            color_bitmap[x0,y0] = color
-            #self._pixel(x0, y0, *args, **kwargs)
-        err -= dy
-        if err < 0:
-            y0 += ystep
-            err += dx
-        x0 += 1
+hardware = HardwareGizmo()
 
 # A few section configurations for the gizmo hardware
 CONFIGS = {
@@ -79,7 +39,7 @@ DEFAULT_COLORS = [
     ]
 
 for x in range(len(DEFAULT_COLORS)):
-    color_palette[x] = DEFAULT_COLORS[x]
+    hardware.set_color(x,DEFAULT_COLORS[x])
 
 # The display script
 
@@ -102,7 +62,7 @@ SCRIPT = [
 
 # Run the script (repeatedly)
 
-artist = LineArt(line,color_bitmap,color_palette,CONFIGS)
+artist = LineArt(hardware,CONFIGS)
 
 while True:
     artist.run_commands(SCRIPT)

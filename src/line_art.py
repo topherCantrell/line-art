@@ -28,17 +28,15 @@ class CornerCursor:
             p1 = self._lines[self._po][0]
             p0 = self._lines[self._po][1]
         self._artist._lines.append((self._xo+p0[0],self._yo+p0[1],self._xo+p1[0],self._yo+p1[1]))
-        self._artist._line_fn(self._xo+p0[0],self._yo+p0[1],self._xo+p1[0],self._yo+p1[1],self._co)
+        self._artist._hardware.draw_line(self._xo+p0[0],self._yo+p0[1],self._xo+p1[0],self._yo+p1[1],self._co)
         self._po += self._index_offset
         if self._po<0 or self._po>=len(self._lines):
             self._has_next = False   
             
 class LineArt:
     
-    def __init__(self,line_fn,bitmap,color_palette,configs):
-        self._line_fn = line_fn
-        self._bitmap = bitmap
-        self._color_palette = color_palette
+    def __init__(self,hardware,configs):
+        self._hardware = hardware        
         self._configs = configs
         
         self._lines = []
@@ -63,21 +61,18 @@ class LineArt:
         return corner_lines
         
     def set_color(self,num,value):
-        self._color_palette[num] = value
+        self._hardware.set_color(num,value)
     
-    def sleep(self,num_seconds):
-        time.sleep(num_seconds)
+    def pause(self,num_seconds):
+        self._hardware.pause(num_seconds)
     
     def clear(self,strategy=None):
         if not strategy:
-            self._lines = []
-            for y in range(240):
-                for x in range(240):
-                    self._bitmap[x,y] = 0
+            self._hardware.clear()
         elif strategy=='UNDO':
             for x in range(len(self._lines)-1,-1,-1):
                 un = self._lines[x]
-                self._line_fn(un[0],un[1],un[2],un[3],0)
+                self._hardware.draw_line(un[0],un[1],un[2],un[3],0)
             self._lines = []
         else:
             raise Exception('Unknown clear strategy: '+strategy)
@@ -126,7 +121,7 @@ class LineArt:
             self.change_config(cmd[7:].strip())
         elif cmd.startswith('SLEEP '):
             cmd = cmd[6:]
-            self.sleep(int(cmd.strip()))
+            self.pause(int(cmd.strip()))
         elif cmd == 'CLEAR':
             self.clear()
         elif cmd.startswith('CLEAR '):
