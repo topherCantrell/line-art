@@ -10,6 +10,8 @@ class CornerCursor:
         self._co = co
         self._is_cw = is_cw        
         self._has_next = True
+        # Cache pointer for speed
+        self._draw_line_fn = artist._hardware.draw_line
         if is_cw:
             self._po = 0
             self._index_offset = 1
@@ -28,7 +30,7 @@ class CornerCursor:
             p1 = self._lines[self._po][0]
             p0 = self._lines[self._po][1]
         self._artist._lines.append((self._xo+p0[0],self._yo+p0[1],self._xo+p1[0],self._yo+p1[1]))
-        self._artist._hardware.draw_line(self._xo+p0[0],self._yo+p0[1],self._xo+p1[0],self._yo+p1[1],self._co)
+        self._draw_line_fn(self._xo+p0[0],self._yo+p0[1],self._xo+p1[0],self._yo+p1[1],self._co)
         self._po += self._index_offset
         if self._po<0 or self._po>=len(self._lines):
             self._has_next = False   
@@ -37,8 +39,7 @@ class LineArt:
     
     def __init__(self,hardware,configs):
         self._hardware = hardware        
-        self._configs = configs
-        
+        self._configs = configs        
         self._lines = []
         
     def _get_line_defs(self,size,div):    

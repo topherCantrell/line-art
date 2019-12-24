@@ -27,6 +27,7 @@ class HardwareBase():
     def draw_line(self,x0,y0,x1,y1,color):        
         # Line drawing function.  Will draw a single pixel wide line starting at
         # x0, y0 and ending at x1, y1.
+        set_pixel_fn = self.set_pixel # cache for speed
         steep = abs(y1 - y0) > abs(x1 - x0)
         if steep:
             x0, y0 = y0, x0
@@ -44,9 +45,9 @@ class HardwareBase():
             ystep = -1
         while x0 <= x1:
             if steep:
-                self.set_pixel(y0,x0,color)                
+                set_pixel_fn(y0,x0,color)                
             else:
-                self.set_pixel(x0,y0,color)                
+                set_pixel_fn(x0,y0,color)                
             err -= dy
             if err < 0:
                 y0 += ystep
