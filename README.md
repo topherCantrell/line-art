@@ -1,22 +1,23 @@
 # Line Art
 
+
+
+## Panel language
+
 ![](art/config.jpg)
 
 E,F,G,H are big-corners of the display (A,B,C,D).
 
-## Panel language
+`TODO: This has evolved. Discuss here.`
 
-`TODO: This has evolved`
+  - Configs
+  - CW/CCW
+  - Divisions
+  - Offsets
+  - Plus (simultaneous)
+  - Sleep
+  - Clear UNDO
 
-A corner is described with number (quadrant), letter (corner/direction), and color (2 digit hex):
-
-For instance, `2b03` is quadrant 2, corner B (counter-clockwise), and color 3.
-
-A display rendering is defined by a series of corners separated by a comma ',' or plus '+'.
-For instance: `1a02+3A04,1a04`
-
-The comma menas to finish drawing before moving to the next corner. The '+' means to draw the corners
-at the same time.
 
 ## Christmas 2019
 
