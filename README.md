@@ -6,8 +6,6 @@
 
 ![](art/config.jpg)
 
-E,F,G,H are big-corners of the display (A,B,C,D).
-
 `TODO: This has evolved. Discuss here.`
 
   - Configs
